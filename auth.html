@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Login or Signup to SkillQuest Circle to access your dashboard and collaborate on tech projects.">
+    <meta name="keywords" content="SkillQuest, login, signup, dashboard, tech projects">
+    <meta property="og:title" content="SkillQuest Circle - Login/Signup">
+    <meta property="og:description" content="Access your SkillQuest Circle dashboard.">
+    <meta property="og:image" content="https://via.placeholder.com/150/6f42c1/ffffff?text=Logo">
+    <title>SkillQuest Circle - Login/Signup</title>
+    <link rel="icon" type="image/png" href="/pics/sqcircle.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffffffbf;
+            color: #4b5563;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* Custom Colors */
+        :root {
+            --skillquest-purple: #6f42c1;
+            --skillquest-yellow: #f4d03f;
+            --skillquest-gray: #4b5563;
+            --clr-green: #01c3a8;
+            --clr-orange: #ffb741;
+            --clr-blue: #1890ff;
+            --clr-mentor: #d66fd3;
+            --clr-mentor-hover: #e362c9;
+        }
+
+        /* Bubble Animation */
+        .bubble-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(calc(var(--wobble) * 50px));
+                opacity: 0.1;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .bubble {
+                animation: none;
+                display: none;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Header Section */
+        header {
+            padding: 10px 0;
+            background-color: transparent;
+            position: relative;
+            z-index: 1000;
+        }
+
+        header .flex-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: -50px;
+            margin-bottom: -150px;
+        }
+
+        header img.logo {
+            width: 200px;
+            height: 200px;
+        }
+
+        header .hero-image-link {
+            cursor: pointer;
+            display: block;
+            line-height: 0;
+            z-index: 1001;
+        }
+
+        /* Auth Section - New Sliding Form Styles */
+        #auth {
+            padding: 32px 0;
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        #auth h2 {
+            font-size: 2.25rem;
+            font-weight: 600;
+            color: var(--skillquest-yellow);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .auth-slider-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
+                        0 10px 10px rgba(0,0,0,0.22);
+            position: relative;
+            overflow: hidden;
+            width: 768px;
+            max-width: 100%;
+            min-height: 480px;
+        }
+
+        .form-container {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            transition: all 0.6s ease-in-out;
+        }
+
+        .sign-in-container {
+            left: 0;
+            width: 50%;
+            z-index: 2;
+        }
+
+        .auth-slider-container.right-panel-active .sign-in-container {
+            transform: translateX(100%);
+        }
+
+        .sign-up-container {
+            left: 0;
+            width: 50%;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .auth-slider-container.right-panel-active .sign-up-container {
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 5;
+            animation: show 0.6s;
+        }
+
+        @keyframes show {
+            0%, 49.99% {
+                opacity: 0;
+                z-index: 1;
+            }
+            50%, 100% {
+                opacity: 1;
+                z-index: 5;
+            }
+        }
+
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            transition: transform 0.6s ease-in-out;
+            z-index: 100;
+        }
+
+        .auth-slider-container.right-panel-active .overlay-container {
+            transform: translateX(-100%);
+        }
+
+        .overlay {
+            background: linear-gradient(to right, var(--skillquest-purple), var(--skillquest-yellow));
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: 0 0;
+            color: #ffffff;
+            position: relative;
+            left: -100%;
+            height: 100%;
+            width: 200%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .auth-slider-container.right-panel-active .overlay {
+            transform: translateX(50%);
+        }
+
+        .overlay-panel {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            padding: 0 40px;
+            top: 0;
+            height: 100%;
+            width: 40%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .overlay-left {
+            transform: translateX(-20%);
+            justify-content: flex-start;
+            align-items: flex-start;
+            text-align: left;
+            margin-top: 150px;
+        }
+
+        .auth-slider-container.right-panel-active .overlay-left {
+            transform: translateX(0);
+        }
+
+        .overlay-right {
+            right: 0;
+            transform: translateX(0);
+            justify-content: flex-start;
+            align-items: flex-start;
+            text-align: left;
+            margin-top: 150px;
+        }
+
+        .auth-slider-container.right-panel-active .overlay-right {
+            transform: translateX(20%);
+        }
+
+        .overlay-panel h1 {
+            font-weight: 600;
+            margin: 0;
+            color: #ffffff;
+        }
+
+        .overlay-panel p {
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 20px;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+        }
+
+        .overlay-panel button {
+            border-radius: 20px;
+            border: 1px solid #ffffff;
+            background-color: transparent;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 12px 45px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .overlay-panel button:hover {
+            background-color: var(--skillquest-yellow);
+            color: var(--skillquest-gray);
+            border-color: var(--skillquest-yellow);
+        }
+
+        .overlay-panel button:active {
+            transform: scale(0.95);
+        }
+
+        .overlay-panel button:focus {
+            outline: none;
+        }
+
+        .form-container form {
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 50px;
+            height: 100%;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .form-container h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--skillquest-purple);
+            margin-bottom: 20px;
+        }
+
+        .form-container span {
+            font-size: 12px;
+            color: var(--skillquest-gray);
+            margin: 10px 0;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 6px 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #d1d5db;
+            font-size: 16px;
+            color: var(--skillquest-gray);
+            outline: none;
+            margin: 8px 0;
+        }
+
+        .form-container input:focus {
+            border-color: var(--skillquest-purple);
+        }
+
+        .form-container a {
+            color: var(--skillquest-purple);
+            font-size: 14px;
+            text-decoration: none;
+            margin: 15px 0;
+        }
+
+        .form-container a:hover {
+            color: var(--skillquest-yellow);
+        }
+
+        .form-container button {
+            border-radius: 20px;
+            border: 1px solid var(--skillquest-purple);
+            background-color: var(--skillquest-purple);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 12px 45px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .form-container button:hover {
+            background-color: var(--skillquest-yellow);
+            color: var(--skillquest-gray);
+            border-color: var(--skillquest-yellow);
+        }
+
+        .form-container button:active {
+            transform: scale(0.95);
+        }
+
+        .form-container button:focus {
+            outline: none;
+        }
+
+        /* Toggle Buttons for Mobile */
+        .toggle-btn {
+            color: var(--skillquest-purple);
+            font-size: 14px;
+            text-decoration: none;
+            margin: 15px 0;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .toggle-btn:hover {
+            color: var(--skillquest-yellow);
+        }
+
+        /* Specific toggle link for mobile */
+        .mobile-toggle-link {
+            display: none; /* Hidden by default, shown on mobile */
+        }
+
+        .social-container {
+            margin: 20px 0;
+        }
+
+        .social-container a {
+            border: 1px solid #d1d5db;
+            border-radius: 50%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 5px;
+            height: 40px;
+            width: 40px;
+            color: var(--skillquest-gray);
+            transition: all 0.3s ease;
+        }
+
+        .social-container a:hover {
+            background-color: var(--skillquest-purple);
+            color: #ffffff;
+            border-color: var(--skillquest-purple);
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 2px;
+            display: block;
+        }
+
+        .auth-feedback {
+            display: block;
+            margin-top: 12px;
+            font-size: 12px;
+            text-align: center;
+            color: #10b981;
+        }
+
+        .auth-feedback.error {
+            color: #ef4444;
+        }
+
+        /* Footer Section */
+        footer {
+            padding: 20px 0;
+            background-color: transparent;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 18px;
+            color: #4b5563;
+            margin: 0 0 8px;
+        }
+
+        footer a {
+            color: var(--skillquest-purple);
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        footer a:hover {
+            color: var(--skillquest-yellow);
+        }
+
+        footer i {
+            color: red;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header .flex-container {
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .auth-slider-container {
+                width: 100%;
+                min-height: auto;
+                height: auto;
+                padding: 20px;
+                overflow: visible;
+            }
+
+            .form-container {
+                position: static;
+                width: 100%;
+                height: auto;
+                padding: 0;
+            }
+
+            .sign-in-container {
+                width: 100%;
+                display: block; /* Show Sign In form by default */
+            }
+
+            .sign-up-container {
+                width: 100%;
+                display: none; /* Hide Sign Up form by default */
+            }
+
+            /* Remove slider and overlay on mobile */
+            .auth-slider-container.right-panel-active .sign-in-container,
+            .auth-slider-container.right-panel-active .sign-up-container {
+                transform: none;
+                opacity: 1;
+            }
+
+            .overlay-container {
+                display: none;
+            }
+
+            .toggle-btn {
+                display: none; /* Hide the default toggle buttons */
+            }
+
+            .mobile-toggle-link {
+                display: block; /* Show the mobile-specific toggle link */
+                text-align: center;
+            }
+
+            .form-container form {
+                padding: 20px 30px;
+                height: auto;
+            }
+
+            .form-container h1 {
+                font-size: 1.25rem;
+                margin-bottom: 15px;
+            }
+
+            .form-container input {
+                font-size: 14px;
+                margin: 6px 0;
+            }
+
+            .form-container button {
+                padding: 10px 40px;
+                font-size: 11px;
+            }
+
+            .auth-feedback {
+                font-size: 11px;
+                margin-top: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header img.logo {
+                width: 80px;
+                height: 80px;
+            }
+
+            footer p, footer a {
+                font-size: 12px;
+            }
+
+            .form-container form {
+                padding: 15px 20px;
+            }
+
+            #auth h2 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Bubble Container -->
+    <div class="bubble-container"></div>
+
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="flex-container">
+                <a href="main.html" class="hero-image-link">
+                    <img src="/pics/sqclogo.png" alt="SkillQuest Circle Logo" class="logo" />
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Auth Section with Sliding Form -->
+    <section id="auth">
+        <div class="container">
+            <h2 class="animate-fade-in">Signin · Signup</h2>
+            <div class="auth-slider-container" id="auth-slider-container">
+                <div class="form-container sign-in-container">
+                    <form id="login-form" novalidate>
+                        <h1>Sign in</h1>
+                        <input type="email" id="login-email" name="email" required placeholder="Email" aria-describedby="login-email-error">
+                        <span id="login-email-error" class="error-message"></span>
+                        <input type="password" id="login-password" name="password" required placeholder="Password" aria-describedby="login-password-error">
+                        <span id="login-password-error" class="error-message"></span>
+                        <a href="#">Forgot your password?</a>
+                        <button type="submit" id="login-btn">Sign In</button>
+                        <span id="login-feedback" class="auth-feedback" aria-live="polite"></span>
+                        <a class="toggle-btn" id="signUpMobile">Don't have an account? Sign Up</a>
+                    </form>
+                </div>
+                <div class="form-container sign-up-container">
+                    <form id="signup-form" novalidate>
+                        <h1>Create Account</h1>
+                        <input type="text" id="signup-username" name="username" required placeholder="Username" aria-describedby="signup-username-error">
+                        <span id="signup-username-error" class="error-message"></span>
+                        <input type="email" id="signup-email" name="email" required placeholder="Email" aria-describedby="signup-email-error">
+                        <span id="signup-email-error" class="error-message"></span>
+                        <input type="password" id="signup-password" name="password" required placeholder="Password" aria-describedby="signup-password-error">
+                        <span id="signup-password-error" class="error-message"></span>
+                        <button type="submit" id="signup-btn">Sign Up</button>
+                        <span id="signup-feedback" class="auth-feedback" aria-live="polite"></span>
+                        <a class="toggle-btn" id="signInMobile">Already have an account? Sign In</a>
+                    </form>
+                </div>
+                <div class="overlay-container">
+                    <div class="overlay">
+                        <div class="overlay-panel overlay-left">
+                            <h1>Welcome Back!</h1>
+                            <p>To keep connected with us please login with your personal info</p>
+                            <button class="ghost" id="signIn">Sign In</button>
+                        </div>
+                        <div class="overlay-panel overlay-right">
+                            <h1>Hello, Friend!</h1>
+                            <p>Enter your personal details and start your journey with us</p>
+                            <button class="ghost" id="signUp">Sign Up</button>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="mobile-toggle-link" id="mobileToggleLink">Don't have an account? Sign Up</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container animate-fade-in">
+            <p>© 2025 SkillQuest Circle. All rights reserved.</p>
+            <div class="mt-2">
+                <a href="https://www.linkedin.com/company/skillquestcircle/" aria-label="Visit our LinkedIn page" target="_blank">LinkedIn · </a>
+                <a href="https://www.linkedin.com/in/theritikbarnwal/" aria-label="Visit LinkedIn" target="_blank">Ritik Barnwal</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sliding Form Toggle (Only for Larger Screens)
+        const signUpButton = document.getElementById('signUp');
+        const signInButton = document.getElementById('signIn');
+        const signUpMobile = document.getElementById('signUpMobile');
+        const signInMobile = document.getElementById('signInMobile');
+        const container = document.getElementById('auth-slider-container');
+
+        // Only add event listeners for slider if the screen is larger than 768px
+        if (window.innerWidth > 768) {
+            signUpButton.addEventListener('click', () => {
+                container.classList.add("right-panel-active");
+            });
+
+            signInButton.addEventListener('click', () => {
+                container.classList.remove("right-panel-active");
+            });
+
+            signUpMobile.addEventListener('click', () => {
+                container.classList.add("right-panel-active");
+            });
+
+            signInMobile.addEventListener('click', () => {
+                container.classList.remove("right-panel-active");
+            });
+        }
+
+        // Mobile Toggle Functionality (for screens <= 768px)
+        const mobileToggleLink = document.getElementById('mobileToggleLink');
+        const signInContainer = document.querySelector('.sign-in-container');
+        const signUpContainer = document.querySelector('.sign-up-container');
+
+        // Initialize form visibility on page load for mobile
+        if (window.innerWidth <= 768) {
+            signInContainer.style.display = 'block';
+            signUpContainer.style.display = 'none';
+            mobileToggleLink.textContent = "Don't have an account? Sign Up";
+
+            mobileToggleLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (signInContainer.style.display !== 'none') {
+                    // Show Sign Up form, hide Sign In form
+                    signInContainer.style.display = 'none';
+                    signUpContainer.style.display = 'block';
+                    mobileToggleLink.textContent = 'Already have an account? Sign In';
+                } else {
+                    // Show Sign In form, hide Sign Up form
+                    signInContainer.style.display = 'block';
+                    signUpContainer.style.display = 'none';
+                    mobileToggleLink.textContent = "Don't have an account? Sign Up";
+                }
+            });
+        }
+
+        // Authentication State Management
+        const authSection = document.querySelector('#auth');
+
+        // Check if user is logged in on page load
+        function checkAuthState() {
+            const loggedInUser = localStorage.getItem('loggedInUser');
+            if (loggedInUser) {
+                window.location.href = 'dash.html'; // Redirect to dashboard if logged in
+            } else {
+                authSection.style.display = 'flex';
+            }
+        }
+
+        // Initialize auth state
+        checkAuthState();
+
+        // Signup Form Handler
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const feedback = document.getElementById('signup-feedback');
+            let hasError = false;
+
+            form.querySelectorAll('.error-message').forEach(span => span.textContent = '');
+            form.querySelectorAll('input').forEach(input => input.setAttribute('aria-invalid', 'false'));
+
+            const username = form.username.value.trim();
+            if (username.length < 3) {
+                document.getElementById('signup-username-error').textContent = 'Username must be at least 3 characters';
+                form.username.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            const email = form.email.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('signup-email-error').textContent = 'Please enter a valid email';
+                form.email.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            const password = form.password.value.trim();
+            if (password.length < 6) {
+                document.getElementById('signup-password-error').textContent = 'Password must be at least 6 characters';
+                form.password.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            if (hasError) {
+                feedback.textContent = 'Please fix the errors above.';
+                feedback.classList.add('error');
+                return;
+            }
+
+            // Check if user already exists
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            if (users.some(user => user.email === email)) {
+                feedback.textContent = 'Email already exists. Please log in.';
+                feedback.classList.add('error');
+                return;
+            }
+
+            // Save new user
+            const newUser = { username, email, password };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('loggedInUser', JSON.stringify(newUser));
+
+            feedback.textContent = 'Signup successful! Redirecting to dashboard...';
+            feedback.classList.remove('error');
+
+            setTimeout(() => {
+                checkAuthState();
+                form.reset();
+                feedback.textContent = '';
+            }, 1500);
+        });
+
+        // Login Form Handler
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const feedback = document.getElementById('login-feedback');
+            let hasError = false;
+
+            form.querySelectorAll('.error-message').forEach(span => span.textContent = '');
+            form.querySelectorAll('input').forEach(input => input.setAttribute('aria-invalid', 'false'));
+
+            const email = form.email.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('login-email-error').textContent = 'Please enter a valid email';
+                form.email.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            const password = form.password.value.trim();
+            if (password.length < 6) {
+                document.getElementById('login-password-error').textContent = 'Password must be at least 6 characters';
+                form.password.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            if (hasError) {
+                feedback.textContent = 'Please fix the errors above.';
+                feedback.classList.add('error');
+                return;
+            }
+
+            // Verify user credentials
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const user = users.find(user => user.email === email && user.password === password);
+
+            if (!user) {
+                feedback.textContent = 'Invalid email or password.';
+                feedback.classList.add('error');
+                return;
+            }
+
+            // Log the user in
+            localStorage.setItem('loggedInUser', JSON.stringify(user));
+            feedback.textContent = 'Login successful! Redirecting to dashboard...';
+            feedback.classList.remove('error');
+
+            setTimeout(() => {
+                checkAuthState();
+                form.reset();
+                feedback.textContent = '';
+            }, 1500);
+        });
+
+        // Bubble Animation Script
+        const bubbleContainer = document.querySelector('.bubble-container');
+        const numBubbles = 20;
+
+        for (let i = 0; i < numBubbles; i++) {
+            const bubble = document.createElement('span');
+            bubble.classList.add('bubble');
+
+            const size = Math.random() * 30 + 10;
+            const left = Math.random() * 100;
+            const duration = Math.random() * 20 + 10;
+            const delay = Math.random() * 5;
+            const wobble = Math.random() * 2 - 1;
+            const color = Math.random() > 0.5 ? 'var(--skillquest-purple)' : 'var(--skillquest-yellow)';
+
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            bubble.style.left = `${left}%`;
+            bubble.style.backgroundColor = color;
+            bubble.style.animationDuration = `${duration}s`;
+            bubble.style.animationDelay = `${delay}s`;
+            bubble.style.setProperty('--wobble', wobble);
+
+            bubbleContainer.appendChild(bubble);
+        }
+    </script>
+</body>
+</html>

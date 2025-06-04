@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SkillQuest Circle Dashboard - Manage your profile and submit projects.">
+    <meta name="keywords" content="SkillQuest Circle, dashboard, project submission, tech collaboration">
+    <meta name="author" content="SkillQuest Circle Team">
+    <title>SkillQuest Circle Dashboard</title>
+    <link rel="icon" type="image/png" href="/pics/sqcircle.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffffffbf;
+            color: #4b5563;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* Custom Colors */
+        :root {
+            --skillquest-purple: #6f42c1;
+            --skillquest-yellow: #f4d03f;
+            --skillquest-gray: #4b5563;
+        }
+
+        /* Header Section */
+        header {
+            padding: 10px 0;
+            background-color: transparent;
+            position: relative;
+            z-index: 1000;
+        }
+
+        header .flex-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        header img.logo {
+            width: 80px;
+            height: 80px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        nav a {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--skillquest-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            padding: 8px 12px;
+        }
+
+        nav a:hover {
+            color: var(--skillquest-purple);
+        }
+
+        nav a.active {
+            color: var(--skillquest-purple);
+            font-weight: 600;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+            z-index: 1002;
+        }
+
+        .hamburger span {
+            width: 100%;
+            height: 3px;
+            background-color: var(--skillquest-gray);
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        nav.active {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            z-index: 999;
+        }
+
+        /* Main Section */
+        main {
+            padding: 32px 0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--skillquest-yellow);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        /* Profile Section */
+        .profile-section {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .profile-section img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 16px;
+        }
+
+        .profile-section h2 {
+            font-size: 1.5rem;
+            color: var(--skillquest-purple);
+            margin-bottom: 8px;
+        }
+
+        .profile-section p {
+            font-size: 16px;
+            color: #4b5563;
+        }
+
+        /* Project Submission Form */
+        .project-form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background-color: #ffffff;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            font-size: 16px;
+            color: var(--skillquest-purple);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #4b5563;
+            outline: none;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--skillquest-purple);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group.checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group.checkbox input {
+            width: auto;
+        }
+
+        button {
+            background-color: var(--skillquest-purple);
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: var(--skillquest-yellow);
+            color: #4b5563;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: block;
+        }
+
+        #form-feedback {
+            display: block;
+            margin-top: 12px;
+            font-size: 14px;
+            text-align: center;
+            color: #10b981;
+        }
+
+        #form-feedback.error {
+            color: #ef4444;
+        }
+
+        /* Project List */
+        .project-list-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .project-item {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .project-item h3 {
+            font-size: 16px;
+            color: var(--skillquest-purple);
+            margin: 0 0 8px;
+        }
+
+        .project-item p {
+            font-size: 14px;
+            color: #4b5563;
+            margin: 4px 0;
+        }
+
+        .project-item .team-images {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .project-item .team-images img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .project-item .actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .edit-btn, .delete-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .edit-btn {
+            background-color: var(--skillquest-purple);
+            color: #ffffff;
+        }
+
+        .edit-btn:hover:not(:disabled) {
+            background-color: var(--skillquest-yellow);
+            color: #4b5563;
+        }
+
+        .delete-btn {
+            background-color: #ef4444;
+            color: #ffffff;
+        }
+
+        .delete-btn:hover:not(:disabled) {
+            background-color: #dc2626;
+        }
+
+        .no-projects-message {
+            text-align: center;
+            font-size: 16px;
+            color: #4b5563;
+        }
+
+        /* Footer */
+        footer {
+            padding: 20px 0;
+            background-color: transparent;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 16px;
+            color: #4b5563;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            header .flex-container {
+                justify-content: space-between;
+            }
+
+            nav {
+                display: none;
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .profile-section img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .project-form, .project-list-container {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="flex-container">
+                <a href="main.html" aria-label="Go to home page">
+                    <img src="/pics/sqclogo.png" alt="SkillQuest Circle Logo" class="logo">
+                </a>
+                <div class="hamburger" tabindex="0" role="button" aria-label="Toggle navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <nav role="navigation" aria-label="Main navigation">
+                    <a href="main.html" aria-label="Go to home page">Home</a>
+                    <a href="dash.html" class="nav-dashboard active" aria-label="Go to dashboard">Dashboard</a>
+                    <a href="auth.html" class="nav-signinup" style="display: none;" aria-label="Sign in or sign up">Sign In/Up</a>
+                    <a href="#" class="nav-logout" aria-label="Log out">Logout</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Section -->
+    <main>
+        <div class="container">
+            <h1>Dashboard</h1>
+
+            <!-- Profile Section -->
+            <section class="profile-section">
+                <img src="/pics/ritik.jpg" alt="User Profile Picture" id="profile-pic">
+                <h2 id="profile-name">User Name</h2>
+                <p id="profile-email">user@example.com</p>
+            </section>
+
+            <!-- Project Submission Form -->
+            <section class="project-form">
+                <h2 id="form-title" style="font-size: 1.5rem; color: var(--skillquest-purple); text-align: center; margin-bottom: 20px;">Submit a Project</h2>
+                <form id="project-form" novalidate>
+                    <input type="hidden" id="project-id">
+                    <div class="form-group">
+                        <label for="project-name">Project Name</label>
+                        <input type="text" id="project-name" name="name" required aria-describedby="project-name-error" placeholder="Enter project name">
+                        <span id="project-name-error" class="error-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-description">Description</label>
+                        <textarea id="project-description" name="description" required aria-describedby="project-description-error" placeholder="Describe your project"></textarea>
+                        <span id="project-description-error" class="error-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-date">Date</label>
+                        <input type="date" id="project-date" name="date" required aria-describedby="project-date-error">
+                        <span id="project-date-error" class="error-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-github">GitHub Link</label>
+                        <input type="url" id="project-github" name="githubLink" aria-describedby="project-github-error" placeholder="https://github.com/username/repo">
+                        <span id="project-github-error" class="error-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-team">Team Member Images</label>
+                        <input type="file" id="project-team" name="team" multiple accept="image/*" aria-describedby="project-team-error">
+                        <span id="project-team-error" class="error-message"></span>
+                    </div>
+                    <div class="form-group checkbox">
+                        <input type="checkbox" id="project-public" name="isPublic">
+                        <label for="project-public">Publish to Main Page</label>
+                    </div>
+                    <button type="submit" id="submit-btn">Submit Project</button>
+                    <span id="form-feedback" aria-live="polite"></span>
+                </form>
+            </section>
+
+            <!-- Project List Section -->
+            <section class="project-list">
+                <h2 style="font-size: 1.5rem; color: var(--skillquest-purple); text-align: center; margin-bottom: 20px;">Your Projects</h2>
+                <div id="project-list-container" class="project-list-container"></div>
+                <div id="no-projects-message" class="no-projects-message" style="display: none;">No projects submitted yet.</div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="container">
+            <p>© 2025 SkillQuest Circle. All rights reserved.</p>
+            <div class="mt-2">
+                <a href="https://www.linkedin.com/company/skillquestcircle/" aria-label="Visit our LinkedIn page" target="_blank">LinkedIn · </a>
+                <a href="https://www.linkedin.com/in/theritikbarnwal/" aria-label="Visit LinkedIn" target="_blank">Ritik Barnwal</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Hamburger Menu Toggle
+        const hamburger = document.querySelector('.hamburger');
+        const nav = document.querySelector('nav');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            nav.classList.toggle('active');
+        });
+
+        hamburger.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                hamburger.classList.toggle('active');
+                nav.classList.toggle('active');
+            }
+        });
+
+        nav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                nav.classList.remove('active');
+            });
+        });
+
+        // Authentication State Management
+        const navSignInUp = document.querySelector('.nav-signinup');
+        const navDashboard = document.querySelector('.nav-dashboard');
+        const navLogout = document.querySelector('.nav-logout');
+
+        function updateNav() {
+            let loggedInUser = null;
+            try {
+                loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            } catch (error) {
+                console.error('Error parsing loggedInUser:', error);
+            }
+            if (loggedInUser) {
+                navSignInUp.style.display = 'none';
+                navDashboard.style.display = 'inline-block';
+                navLogout.style.display = 'inline-block';
+                document.getElementById('profile-name').textContent = loggedInUser.name || 'User';
+                document.getElementById('profile-email').textContent = loggedInUser.email || 'user@example.com';
+            } else {
+                navSignInUp.style.display = 'inline-block';
+                navDashboard.style.display = 'none';
+                navLogout.style.display = 'none';
+                window.location.href = 'auth.html';
+            }
+        }
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'loggedInUser') {
+                updateNav();
+            }
+        });
+
+        navLogout.addEventListener('click', (e) => {
+            e.preventDefault();
+            try {
+                localStorage.removeItem('loggedInUser');
+                alert('You have been logged out.');
+                updateNav();
+                window.location.href = 'new.html';
+            } catch (error) {
+                console.error('Error during logout:', error);
+                alert('An error occurred during logout. Please try again.');
+            }
+        });
+
+        updateNav();
+
+        // Project Form and List Management
+        const projectForm = document.getElementById('project-form');
+        const formTitle = document.getElementById('form-title');
+        const submitBtn = document.getElementById('submit-btn');
+        const projectListContainer = document.getElementById('project-list-container');
+        const noProjectsMessage = document.getElementById('no-projects-message');
+        let editingProjectId = null;
+
+        function renderProjectList() {
+            projectListContainer.innerHTML = '';
+            noProjectsMessage.style.display = 'none';
+
+            try {
+                let projects = JSON.parse(localStorage.getItem('submittedProjects')) || [];
+                if (!Array.isArray(projects)) {
+                    projects = [];
+                }
+
+                if (projects.length === 0) {
+                    noProjectsMessage.style.display = 'block';
+                    return;
+                }
+
+                projects.forEach(project => {
+                    const projectItem = document.createElement('div');
+                    projectItem.className = 'project-item';
+                    projectItem.innerHTML = `
+                        <h3>${project.name}</h3>
+                        <p>${project.description}</p>
+                        <p>Date: ${project.date}</p>
+                        <p>GitHub: <a href="${project.githubLink}" target="_blank">${project.githubLink === '#' ? 'None' : project.githubLink}</a></p>
+                        <p>Public: ${project.isPublic ? 'Yes' : 'No'}</p>
+                        <div class="team-images">
+                            ${project.team.map(img => `<img src="${img}" alt="Team Member" onerror="this.src='/pics/ritik.jpg'">`).join('')}
+                        </div>
+                        <div class="actions">
+                            <button class="edit-btn" data-id="${project.id}">Edit</button>
+                            <button class="delete-btn" data-id="${project.id}">Delete</button>
+                        </div>
+                    `;
+                    projectListContainer.appendChild(projectItem);
+                });
+
+                projectListContainer.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const projectId = e.target.dataset.id;
+                        editProject(projectId);
+                    });
+                });
+
+                projectListContainer.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        if (confirm('Are you sure you want to delete this project?')) {
+                            const projectId = e.target.dataset.id;
+                            deleteProject(projectId);
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error('Error rendering project list:', error);
+                noProjectsMessage.style.display = 'block';
+            }
+        }
+
+        function editProject(projectId) {
+            try {
+                const projects = JSON.parse(localStorage.getItem('submittedProjects')) || [];
+                const project = projects.find(p => p.id === projectId);
+                if (!project) return;
+
+                editingProjectId = projectId;
+                formTitle.textContent = 'Edit Project';
+                submitBtn.textContent = 'Update Project';
+                document.getElementById('project-id').value = project.id;
+                document.getElementById('project-name').value = project.name;
+                document.getElementById('project-description').value = project.description;
+                document.getElementById('project-date').value = project.date;
+                document.getElementById('project-github').value = project.githubLink !== '#' ? project.githubLink : '';
+                document.getElementById('project-public').checked = project.isPublic;
+                document.getElementById('project-team').value = ''; // File input cannot be pre-filled
+            } catch (error) {
+                console.error('Error loading project for edit:', error);
+            }
+        }
+
+        function deleteProject(projectId) {
+            try {
+                let projects = JSON.parse(localStorage.getItem('submittedProjects')) || [];
+                projects = projects.filter(project => project.id !== projectId);
+                localStorage.setItem('submittedProjects', JSON.stringify(projects));
+                renderProjectList();
+                alert('Project deleted successfully!');
+            } catch (error) {
+                console.error('Error deleting project:', error);
+                alert('Failed to delete project.');
+            }
+        }
+
+        async function convertFilesToBase64(files) {
+            const base64Images = [];
+            for (const file of files) {
+                if (!file.type.startsWith('image/')) {
+                    throw new Error('Please upload image files only.');
+                }
+                const base64 = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+                base64Images.push(base64);
+            }
+            return base64Images;
+        }
+
+        projectForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const feedback = document.getElementById('form-feedback');
+            let hasError = false;
+
+            projectForm.querySelectorAll('.error-message').forEach(span => span.textContent = '');
+            projectForm.querySelectorAll('input, textarea').forEach(input => input.setAttribute('aria-invalid', 'false'));
+
+            const name = projectForm.name.value.trim();
+            if (name.length < 2) {
+                document.getElementById('project-name-error').textContent = 'Project name must be at least 2 characters';
+                projectForm.name.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            const description = projectForm.description.value.trim();
+            if (description.length < 10) {
+                document.getElementById('project-description-error').textContent = 'Description must be at least 10 characters';
+                projectForm.description.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            const date = projectForm.date.value;
+            if (!date) {
+                document.getElementById('project-date-error').textContent = 'Please select a date';
+                projectForm.date.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            const githubLink = projectForm.githubLink.value.trim();
+            const urlRegex = /^(https?:\/\/[^\s$.?#].[^\s]*)$/;
+            if (githubLink && !urlRegex.test(githubLink)) {
+                document.getElementById('project-github-error').textContent = 'Please enter a valid URL';
+                projectForm.githubLink.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            let teamImages = [];
+            const teamFiles = projectForm.team.files;
+            if (teamFiles.length > 0) {
+                try {
+                    teamImages = await convertFilesToBase64(teamFiles);
+                } catch (error) {
+                    document.getElementById('project-team-error').textContent = error.message;
+                    projectForm.team.setAttribute('aria-invalid', 'true');
+                    hasError = true;
+                }
+            }
+
+            if (hasError) {
+                feedback.textContent = 'Please fix the errors above.';
+                feedback.classList.add('error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            feedback.textContent = '';
+            feedback.classList.remove('error');
+
+            try {
+                let projects = JSON.parse(localStorage.getItem('submittedProjects')) || [];
+                if (!Array.isArray(projects)) {
+                    projects = [];
+                }
+
+                const project = {
+                    id: editingProjectId || Date.now().toString(),
+                    name,
+                    description,
+                    date,
+                    githubLink: githubLink || '#',
+                    team: teamImages.length > 0 ? teamImages : editingProjectId ? projects.find(p => p.id === editingProjectId)?.team || ['/pics/ritik.jpg'] : ['/pics/ritik.jpg'],
+                    isPublic: projectForm.isPublic.checked
+                };
+
+                if (editingProjectId) {
+                    projects = projects.map(p => p.id === editingProjectId ? project : p);
+                } else {
+                    projects.push(project);
+                }
+
+                localStorage.setItem('submittedProjects', JSON.stringify(projects));
+
+                feedback.textContent = editingProjectId ? 'Project updated successfully!' : 'Project submitted successfully!';
+                projectForm.reset();
+                formTitle.textContent = 'Submit a Project';
+                submitBtn.textContent = 'Submit Project';
+                editingProjectId = null;
+                renderProjectList();
+                setTimeout(() => {
+                    feedback.textContent = '';
+                }, 5000);
+            } catch (error) {
+                console.error('Error saving project:', error);
+                feedback.textContent = 'An error occurred while submitting the project.';
+                feedback.classList.add('error');
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Initialize project list
+        renderProjectList();
+    </script>
+</body>
+</html>
