@@ -1,258 +1,1331 @@
-
-<!DOCTYPE html>
-<html lang="en">
+ <!DOCTYPE html>
+<html lang="en" style="scroll-behavior: smooth;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkillQuest Circle - Coming Soon</title>
-    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'soft-yellow': '#f4d03f',
-                        'soft-yellow-hover': '#d4a017',
-                    },
-                },
-            },
-        };
-    </script>
+    <meta name="description" content="Join SkillQuest Circle to collaborate on innovative tech projects, connect with mentors, and grow your skills.">
+    <meta name="keywords" content="SkillQuest Circle, tech collaboration, coding projects, mentorship, developers, innovation">
+    <meta name="author" content="SkillQuest Circle Team">
+    <meta property="og:title" content="SkillQuest Circle">
+    <meta property="og:description" content="Join SkillQuest Circle to collaborate on tech projects.">
+    <meta property="og:image" content="/pics/sqclogo.png">
+    <title>SkillQuest Circle</title>
+    <link rel="icon" type="image/png" href="/pics/sqcircle.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
+        /* General Styles */
         body {
-            background: #f5f5f5;
-            color: #333333;
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffffffbf;
+            color: #4b5563;
+            min-height: 100vh;
+            margin: 0;
             position: relative;
             overflow-x: hidden;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
-        .bg-animation {
-            position: absolute;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* Custom Colors */
+        :root {
+            --skillquest-purple: #6f42c1;
+            --skillquest-yellow: #f4d03f;
+            --skillquest-gray: #4b5563;
+            --clr-green: #01c3a8;
+            --clr-orange: #ffb741;
+            --clr-blue: #1890ff;
+        }
+
+        /* Bubble Animation */
+        .bubble-container {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
+            pointer-events: none;
             overflow: hidden;
         }
+
         .bubble {
             position: absolute;
+            bottom: -50px;
             border-radius: 50%;
-            opacity: 0.6;
-            animation: bubble-float 12s infinite ease-in-out;
+            opacity: 0.3;
+            animation: float linear infinite;
         }
-        .bubble:nth-child(odd) {
-            background: rgba(181, 0, 255, 0.3);
-            animation-name: bubble-float;
-        }
-        .bubble:nth-child(even) {
-            background: rgba(244, 208, 63, 0.4);
-            animation-name: bubble-swirl;
-        }
-        .bubble:nth-child(1) { top: 15%; left: 10%; width: 12px; height: 12px; animation-delay: 0s; }
-        .bubble:nth-child(2) { top: 25%; left: 60%; width: 20px; height: 20px; animation-delay: 2s; }
-        .bubble:nth-child(3) { top: 40%; left: 85%; width: 8px; height: 8px; animation-delay: 4s; }
-        .bubble:nth-child(4) { top: 60%; left: 25%; width: 15px; height: 15px; animation-delay: 5s; }
-        .bubble:nth-child(5) { top: 10%; left: 45%; width: 10px; height: 10px; animation-delay: 7s; }
-        .bubble:nth-child(6) { top: 70%; left: 70%; width: 18px; height: 18px; animation-delay: 8s; }
-        .bubble:nth-child(7) { top: 30%; left: 15%; width: 14px; height: 14px; animation-delay: 10s; }
-        .bubble:nth-child(8) { top: 50%; left: 90%; width: 16px; height: 16px; animation-delay: 11s; }
-        .sparkle {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.7);
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            animation: sparkle-twinkle 10s infinite ease-in-out;
-        }
-        .sparkle:nth-child(9) { top: 10%; left: 20%; width: 10px; height: 10px; animation-delay: 1s; animation-name: sparkle-twinkle; }
-        .sparkle:nth-child(10) { top: 45%; left: 65%; width: 6px; height: 6px; animation-delay: 3s; animation-name: sparkle-drift; }
-        .sparkle:nth-child(11) { top: 75%; left: 15%; width: 12px; height: 12px; animation-delay: 5s; animation-name: sparkle-twinkle; }
-        .sparkle:nth-child(12) { top: 30%; left: 80%; width: 7px; height: 7px; animation-delay: 7s; animation-name: sparkle-drift; }
-        .sparkle:nth-child(13) { top: 65%; left: 35%; width: 9px; height: 9px; animation-delay: 9s; animation-name: sparkle-twinkle; }
-        @keyframes bubble-float {
-            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.6; }
-            50% { transform: translateY(-150px) translateX(30px); opacity: 0.9; }
-        }
-        @keyframes bubble-swirl {
-            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
-            50% { transform: translateY(-100px) translateX(-20px) rotate(180deg); opacity: 0.8; }
-        }
-        @keyframes sparkle-twinkle {
-            0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; }
-            50% { transform: translateY(-100px) scale(1.3); opacity: 0.9; }
-        }
-        @keyframes sparkle-drift {
-            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.4; }
-            50% { transform: translateY(-80px) translateX(20px) rotate(360deg); opacity: 0.8; }
-        }
-        .fade-in {
-            animation: fadeIn 1.2s ease-in;
-        }
-        .slide-in {
-            animation: slideIn 1s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes slideIn {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .pulse-hover:hover {
-            animation: pulse 0.6s ease-in-out;
-            background-color: #d4a017;
-            box-shadow: 0 6px 12px rgba(181, 0, 255, 0.3);
-        }
-        .icon-pulse-hover:hover {
-            animation: pulse 0.6s ease-in-out;
-            filter: brightness(1.2);
-            box-shadow: 0 4px 8px rgba(228, 255, 50, 0.432);
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        @media (max-width: 640px) {
-            .container {
-                padding-left: 1rem;
-                padding-right: 1rem;
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.3;
             }
-            h1 {
-                font-size: 2.5rem;
+            50% {
+                opacity: 0.5;
             }
-            h2 {
-                font-size: 1.5rem;
+            100% {
+                transform: translateY(-100vh) translateX(calc(var(--wobble) * 50px));
+                opacity: 0.1;
             }
-            p {
-                font-size: 0.9rem;
-            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
             .bubble {
-                width: 6px;
-                height: 6px;
-            }
-            .bubble:nth-child(2), .bubble:nth-child(6), .bubble:nth-child(8) {
-                width: 10px;
-                height: 10px;
-            }
-            .bubble:nth-child(3), .bubble:nth-child(5) {
-                width: 5px;
-                height: 5px;
-            }
-            .sparkle {
-                width: 4px;
-                height: 4px;
-            }
-            .sparkle:nth-child(9), .sparkle:nth-child(11) {
-                width: 5px;
-                height: 5px;
-            }
-            .sparkle:nth-child(10), .sparkle:nth-child(12), .sparkle:nth-child(13) {
-                width: 3px;
-                height: 3px;
+                animation: none;
+                display: none;
             }
         }
-        @media (min-width: 641px) and (max-width: 1024px) {
-            h1 {
-                font-size: 3.5rem;
+
+        /* Animation */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Header Section */
+        header {
+            padding: 10px 0;
+            background-color: transparent;
+            position: relative;
+            z-index: 1000;
+        }
+
+        header .flex-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        header img.logo {
+            width: 200px;
+            height: 200px;
+        }
+
+        header .hero-image-link {
+            cursor: pointer;
+            display: block;
+            line-height: 0;
+            z-index: 1001;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            z-index: 1001;
+        }
+
+        nav a {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--skillquest-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            cursor: pointer;
+            padding: 8px 12px;
+        }
+
+        nav a:hover {
+            color: var(--skillquest-purple);
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 20px;
+            cursor: pointer;
+            z-index: 1002;
+        }
+
+        .hamburger span {
+            width: 100%;
+            height: 3px;
+            background-color: var(--skillquest-gray);
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        nav.active {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            z-index: 999;
+        }
+
+        /* Hero Section */
+        .text-center {
+            text-align: center;
+            width: 100%;
+            margin-top: -100px;
+            background-color: transparent;
+        }
+
+        .hero-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 20px;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 50%;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .hero-text {
+            flex: 1;
+            text-align: left;
+        }
+
+        .hero-text h1 {
+            font-size: 2rem;
+            margin-bottom: -5px;
+            color: var(--skillquest-purple);
+        }
+
+        .tagline {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--skillquest-yellow);
+        }
+
+        .hero-text p .tagline.animate-fade-in {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        .hero-text p .animate-fade-in {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            margin-bottom: 8px;
+            color: #b71414;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .primary, .secondary {
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+
+        .primary {
+            background-color: var(--skillquest-purple);
+            color: #fff;
+        }
+
+        .primary:hover {
+            background-color: var(--skillquest-yellow);
+            color: #4b5563;
+        }
+
+        .secondary {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        .secondary:hover {
+            background-color: var(--skillquest-yellow);
+            color: #4b5563;
+        }
+
+        /* Card Styles */
+        .card {
+            box-shadow: 0.063em 0.75em 1.563em rgba(0, 0, 0, 0.78);
+            border-radius: 24px;
+            position: relative;
+            max-width: 256px;
+            min-height: 256px;
+            width: 100%;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0.125em 1em 2em rgba(0, 0, 0, 0.9);
+        }
+
+        .card.green {
+            background: radial-gradient(ellipse at right top, #107667ed 0%, #151419 47%, #151419 100%);
+            border: 2px solid var(--clr-green);
+        }
+
+        .card.green:hover {
+            border-color: #02e6c0;
+        }
+
+        .card.orange {
+            background: radial-gradient(ellipse at right top, #ffb74194 0%, #151419 47%, #151419 100%);
+            border: 2px solid var(--clr-orange);
+        }
+
+        .card.orange:hover {
+            border-color: #ffc107;
+        }
+
+        .card.blue {
+            background: radial-gradient(ellipse at right top, #00458f8f 0%, #151419 45%, #151419 100%);
+            border: 2px solid var(--clr-blue);
+        }
+
+        .card.blue:hover {
+            border-color: #40c4ff;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+        }
+
+        .card-header .date {
+            color: #d1d5db;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .card:hover .card-header .date {
+            color: #ffffff;
+        }
+
+        .card-header svg {
+            width: 24px;
+            height: 24px;
+            fill: #ffffff;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-header svg {
+            transform: rotate(90deg);
+        }
+
+        .card-body {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 12px;
+            width: 100%;
+        }
+
+        .card-body h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-top: -8px;
+            margin-bottom: 2px;
+            text-transform: capitalize;
+        }
+
+        .card-body p {
+            font-size: 14px;
+            color: #d1d5db;
+            margin-top: 1px;
+            margin-bottom: 22px;
+        }
+
+        .card-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-top: 1px solid #4b5563;
+            background-color: #151419;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+        }
+
+        .card-footer ul {
+            display: flex;
+            align-items: center;
+        }
+
+        .card-footer li {
+            margin-right: -8px;
+        }
+
+        .card-footer img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .btn-add {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .card.green .btn-add {
+            background-color: var(--clr-green);
+        }
+
+        .card.green:hover .btn-add {
+            background-color: #02e6c0;
+            transform: scale(1.2);
+        }
+
+        .card.orange .btn-add {
+            background-color: var(--clr-orange);
+        }
+
+        .card.orange:hover .btn-add {
+            background-color: #ffc107;
+            transform: scale(1.2);
+        }
+
+        .card.blue .btn-add {
+            background-color: var(--clr-blue);
+        }
+
+        .card.blue:hover .btn-add {
+            background-color: #40c4ff;
+            transform: scale(1.2);
+        }
+
+        .btn-add svg {
+            width: 12px;
+            height: 12px;
+            fill: #ffffff;
+        }
+
+        .btn-countdown {
+            background-color: #222127;
+            color: #ffffff;
+            border-radius: 50px;
+            padding: 4px 12px;
+            font-size: 12px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .card.green .btn-countdown:hover {
+            background-color: var(--clr-green);
+            transform: scale(1.1);
+        }
+
+        .card.orange .btn-countdown:hover {
+            background-color: var(--clr-orange);
+            transform: scale(1.1);
+        }
+
+        .card.blue .btn-countdown:hover {
+            background-color: var(--clr-blue);
+            transform: scale(1.1);
+        }
+
+        /* Team Projects Section */
+        #home {
+            padding: 32px 0;
+        }
+
+        #home h2 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--skillquest-yellow);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        #home .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--skillquest-purple);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .no-projects {
+            text-align: center;
+            font-size: 18px;
+            color: #4b5563;
+            margin: 20px 0;
+        }
+
+        /* Marquee Section */
+        #tools-marquee {
+            padding: 32px 0;
+            background-color: transparent;
+        }
+
+        #tools-marquee h2 {
+            font-size: 2.25rem;
+            font-weight: 600;
+            color: var(--skillquest-yellow);
+            text-align: center;
+            margin-bottom: 55px;
+        }
+
+        .marquee {
+            width: 73%;
+            overflow: hidden;
+            position: relative;
+            margin-left: 175px;
+        }
+
+        .marquee-wrapper {
+            display: flex;
+            animation: marquee 20s linear infinite;
+        }
+
+        .marquee-content {
+            display: flex;
+            gap: 24px;
+            width: auto;
+            flex-shrink: 0;
+            flex-wrap: nowrap;
+        }
+
+        .marquee-content img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .marquee:hover .marquee-wrapper {
+            animation-play-state: paused;
+        }
+
+        /* About Section */
+        #about {
+            padding: 32px 0;
+            background-color: transparent;
+        }
+
+        #about h2 {
+            font-size: 2.25rem;
+            font-weight: 600;
+            color: var(--skillquest-yellow);
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        #about p {
+            font-size: 16px;
+            color: #4b5563;
+            text-align: center;
+            max-width: 672px;
+            margin: 0 auto 30px;
+        }
+
+        #about .font-semibold {
+            font-weight: 600;
+            color: var(--skillquest-purple);
+        }
+
+        #about .font-bold {
+            font-weight: 700;
+            color: #4b5563;
+            margin-top: 25px;
+        }
+
+        .about-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-image {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            object-fit: cover;
+        }
+
+        .about-text {
+            flex: 1;
+            max-width: 672px;
+        }
+
+        .about-text .text-center {
+            max-width: 672px;
+            margin: 0 auto;
+        }
+
+        .about-text .text-center p {
+            margin: 0 auto 30px;
+            text-align: center;
+        }
+
+        /* Contact Section */
+        #contact {
+            padding: 32px 0;
+            background-color: transparent;
+        }
+
+        #contact h2 {
+            font-size: 44px;
+            font-weight: 600;
+            color: var(--skillquest-yellow);
+            text-align: center;
+            margin-bottom: 52px;
+        }
+
+        #contact form {
+            max-width: 500px;
+            margin: 0 auto;
+            border: 1px solid #e5e7eb00;
+            padding: 16px;
+            position: relative;
+            background: transparent;
+            z-index: 2;
+        }
+
+        #contact form::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: rgba(255, 255, 255, 0.5);
+            filter: blur(15px);
+            transition: filter 0.3s ease, background-color 0.3s ease;
+            z-index: -1;
+        }
+
+        #contact form:hover::before {
+            filter: blur(1px);
+            background: transparent;
+        }
+
+        #contact form:hover {
+            border-color: var(--skillquest-purple);
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        #contact label {
+            font-size: 18px;
+            font-weight: 400;
+            color: var(--skillquest-purple);
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        #contact input,
+        #contact textarea {
+            width: 100%;
+            padding: 6px 0;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #d1d5db;
+            font-size: 16px;
+            color: var(--skillquest-yellow);
+            outline: none;
+        }
+
+        #contact input:focus,
+        #contact textarea:focus {
+            border-color: var(--skillquest-purple);
+        }
+
+        #contact textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        #contact button {
+            background: none;
+            border: none;
+            color: var(--skillquest-purple);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 0;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        #contact button:hover:not(:disabled) {
+            color: #4b5563;
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 2px;
+            display: block;
+        }
+
+        #form-feedback {
+            display: block;
+            margin-top: 12px;
+            font-size: 12px;
+            text-align: center;
+            color: #10b981;
+        }
+
+        #form-feedback.error {
+            color: #ef4444;
+        }
+
+        /* Footer Section */
+        footer {
+            padding: 20px 0;
+            background-color: transparent;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 18px;
+            color: #4b5563;
+            margin: 0 0 8px;
+        }
+
+        footer a {
+            color: var(--skillquest-purple);
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        footer a:hover {
+            color: var(--skillquest-yellow);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-container {
+                flex-direction: column;
+                gap: 16px;
             }
-            h2 {
+
+            .hero-image {
+                max-width: 80%;
+            }
+
+            .hero-text {
+                text-align: center;
+            }
+
+            .hero-text h1 {
                 font-size: 1.75rem;
             }
-            p {
+
+            .tagline {
+                font-size: 1.1rem;
+            }
+
+            .hero-text p {
                 font-size: 1rem;
             }
+            
+            .card {
+                max-width: 220px;
+                min-height: 220px;
+            }
+
+            .about-image {
+                max-width: 400px;
+            }
         }
-        main {
-            flex: 1 0 auto;
+
+        @media (max-width: 640px) {
+            header .flex-container {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            nav {
+                display: none;
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hero-image {
+                max-width: 100%;
+            }
+
+            .hero-text h1 {
+                font-size: 1.5rem;
+            }
+
+            .tagline {
+                font-size: 1rem;
+            }
+
+            .hero-text p {
+                font-size: 0.9rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card {
+                max-width: 100%;
+                min-height: 200px;
+            }
+
+            #home h2, #tools-marquee h2, #about h2, #contact h2 {
+                font-size: 1.75rem;
+            }
+
+            .marquee-content img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .about-image {
+                max-width: 100%;
+            }
+
+            #contact form {
+                padding: 12px;
+            }
+
+            #contact input,
+            #contact textarea {
+                font-size: 12px;
+            }
+
+            #contact label {
+                font-size: 16px;
+            }
         }
-        footer {
-            flex-shrink: 0;
+
+        @media (max-width: 480px) {
+            header img.logo {
+                width: 80px;
+                height: 80px;
+            }
+
+            .hero-text h1 {
+                font-size: 1.25rem;
+            }
+
+            .tagline {
+                font-size: 0.9rem;
+            }
+
+            .hero-text p {
+                font-size: 0.85rem;
+            }
+
+            .card-body h3 {
+                font-size: 13px;
+            }
+
+            .card-body p {
+                font-size: 11px;
+            }
+
+            #about p {
+                font-size: 14px;
+            }
+
+            footer p, footer a {
+                font-size: 12px;
+            }
+        }
+
+        @media (min-width: 640px) {
+            nav {
+                flex-direction: row;
+            }
         }
     </style>
 </head>
-<body class="font-inter">
-    <div class="bg-animation">
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-        <div class="sparkle"></div>
-    </div>
-    <div id="root"></div>
-    <script type="text/babel">
-        const { useState } = React;
+<body>
+    <!-- Bubble Container -->
+    <div class="bubble-container"></div>
 
-        function Header() {
-            return (
-                <header className="mt-6 sm:mt-8 md:mt-10 py-8 sm:py-12">
-                    <div className="container mx-auto px-4 text-center">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold" style={{ color: '#b500ff' }}>SkillQuest Circle</h1>
-                        <p className="mt-4 text-lg sm:text-xl text-gray-600 slide-in">We're building a community of innovators. Launching Soon!</p>
-                    </div>
-                </header>
-            );
-        }
-
-        function MainContent() {
-            return (
-                <main className="py-8 sm:py-12">
-                    <div className="container mx-auto px-4 text-center">
-                        <div className="bg-white rounded-lg p-6 sm:p-8 max-w-[90%] sm:max-w-[600px] mx-auto shadow-lg slide-in">
-                            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 fade-in">Get Ready to Collaborate!</h2>
-                            <p className="text-gray-600 mb-6 text-sm sm:text-base"><span className="font-semibold text-purple-500">SkillQuest Circle</span> is where you'll connect, learn, and create projects that matter. Stay updated for our launch.</p>
-                            <p className="text-sm text-gray-500 mt-4">Join our community on LinkedIn for updates!</p>
-                            <a 
-                                href="https://www.linkedin.com/company/skillquestcircle/" 
-                                className="inline-block mt-4 icon-pulse-hover transition-all duration-300" 
-                            >
-                                <svg className="w-6 h-6 text-soft-yellow" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
-                                </svg>
-                            </a>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <div class="flex-container">
+                <a href="new.html" class="hero-image-link" aria-label="Go to home page">
+                    <img src="/pics/sqclogo.png" alt="SkillQuest Circle Logo" class="logo" />
+                </a>
+                <div class="hamburger" tabindex="0" role="button" aria-label="Toggle navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <nav role="navigation" aria-label="Main navigation">
+                    <a href="#home" aria-label="Go to home section">Home</a>
+                    <a href="#contact" aria-label="Go to about section">About</a>
+                    <a href="#footer" aria-label="Go to contact section">Contact</a>
+                </nav>
+            </div>
+            <div class="text-center">
+                <div class="hero-container">
+                    <img src="/pics/teamwork.png" alt="Team collaborating on tech projects" class="hero-image animate-fade-in" />
+                    <div class="hero-text">
+                        <h1 class="animate-fade-in">SkillQuest Circle</h1>
+                        <p class="tagline animate-fade-in">Connect, Create, Innovate</p>
+                        <p class="animate-fade-in">
+                            Empowering innovators to collaborate, learn, and build impactful tech projects.
+                            We aim to create a thriving ecosystem where developers, designers, and tech enthusiasts come together to turn ideas into real-world solutions.
+                            Through mentorship, knowledge sharing, and hands-on collaboration, we foster a space where everyone—from beginners to experts—can grow their skills,
+                            explore new technologies, and drive innovation. Join us in building not just projects, but a better future through tech.
+                        </p>
+                        <div class="cta-buttons animate-fade-in">
+                            <a href="#contact" class="primary">Join Now</a>
+                            <a href="#about" class="secondary">Learn More</a>
                         </div>
                     </div>
-                </main>
-            );
-        }
-
-        function Footer() {
-            return (
-                <footer className="bg-white py-6">
-                    <div className="container mx-auto px-4 text-center fade-in">
-                        <p className="text-sm text-gray-500">© 2025 SkillQuest Circle. All rights reserved.</p>
-                    </div>
-                </footer>
-            );
-        }
-
-        function App() {
-            return (
-                <div className="flex flex-col min-h-screen">
-                    <Header />
-                    <MainContent />
-                    <Footer />
                 </div>
-            );
+            </div>
+        </div>
+    </header>
+
+    <!-- Home (Team Projects) Section -->
+    <section id="home" role="region" aria-labelledby="home-heading">
+        <div class="container">
+            <h2 id="home-heading" class="animate-fade-in">Team Collaboration</h2>
+            <div class="loading-spinner" id="project-loading" style="display: none;"></div>
+            <div class="no-projects" id="no-projects" style="display: none;">No projects available</div>
+            <div class="flex-container" id="project-container"></div>
+        </div>
+    </section>
+
+    <!-- Marquee Section -->
+    <section id="tools-marquee" role="region" aria-labelledby="tools-heading">
+        <div class="container">
+            <h2 id="tools-heading" class="animate-fade-in">Tools & Technologies</h2>
+            <div class="marquee">
+                <div class="marquee-wrapper">
+                    <div class="marquee-content">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" alt="GitHub Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="Python Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" alt="HTML5 Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" alt="CSS3 Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" alt="JavaScript Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind CSS Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" alt="Docker Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kubernetes/kubernetes-plain.svg" alt="Kubernetes Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jenkins/jenkins-original.svg" alt="Jenkins Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" alt="VS Code Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" alt="AWS Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg" alt="MongoDB Logo">
+                    </div>
+                    <div class="marquee-content">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" alt="GitHub Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="Python Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" alt="HTML5 Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" alt="CSS3 Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" alt="JavaScript Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind CSS Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" alt="Docker Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kubernetes/kubernetes-plain.svg" alt="Kubernetes Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jenkins/jenkins-original.svg" alt="Jenkins Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" alt="VS Code Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" alt="AWS Logo">
+                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-original.svg" alt="MongoDB Logo">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" role="region" aria-labelledby="about-heading">
+        <div class="container">
+            <h2 id="about-heading" class="animate-fade-in">About Us</h2>
+            <div class="about-container">
+                <img src="/pics/about.png" alt="Team collaborating on tech projects" class="about-image animate-fade-in">
+                <div class="about-text">
+                    <p class="animate-fade-in">
+                        <span class="font-semibold">SkillQuest Circle</span> is a dynamic community where passion meets purpose. We bring together developers, designers, and creators from across the world to collaborate, experiment, and build meaningful tech projects that create real impact.
+                    </p>
+                    <p class="animate-fade-in">
+                        Driven by a spirit of innovation, <span class="font-semibold">SkillQuest Circle</span> provides a space where individuals grow by doing — learning through collaboration, solving real-world challenges, and contributing to initiatives that matter. It’s not about lectures or lessons — it’s about people coming together to learn, create, and innovate as a team.
+                    </p>
+                    <p class="animate-fade-in">
+                        Through hackathons, project-based events, and community-driven ideas, we aim to ignite creativity, nurture problem-solving, and empower every member to make a difference.
+                    </p>
+                    <div class="text-center">
+                        <p class="animate-fade-in">
+                            <span class="font-bold">Join SkillQuest Circle — where ideas spark action, teamwork fuels growth, and every project is a step toward a better future.</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" role="region" aria-labelledby="contact-heading">
+        <div class="container">
+            <h2 id="contact-heading" class="animate-fade-in">Contact Us</h2>
+            <form id="contact-form" novalidate>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required aria-describedby="name-error" placeholder="Your name">
+                    <span id="name-error" class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required aria-describedby="email-error" placeholder="Your email">
+                    <span id="email-error" class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required aria-describedby="phone-error" placeholder="Your phone number">
+                    <span id="phone-error" class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="degree">Degree</label>
+                    <input type="text" id="degree" name="degree" required aria-describedby="degree-error" placeholder="Your degree">
+                    <span id="degree-error" class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="specialization">Specialization</label>
+                    <input type="text" id="specialization" name="specialization" required aria-describedby="specialization-error" placeholder="Your specialization">
+                    <span id="specialization-error" class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <input type="text" id="role" name="role" required aria-describedby="role-error" placeholder="Your role">
+                    <span id="role-error" class="error-message"></span>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required aria-describedby="message-error" rows="4" placeholder="Your message"></textarea>
+                    <span id="message-error" class="error-message"></span>
+                </div>
+                <button type="submit" id="submit-btn">
+                    <span class="btn-text">Submit</span>
+                    <span class="btn-spinner" style="display: none;">⌀</span>
+                </button>
+                <span id="form-feedback" aria-live="polite"></span>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <div id="footer" class="container animate-fade-in">
+            <p>© 2025 SkillQuest Circle. All rights reserved.</p>
+            <div class="mt-2">
+                <a href="https://www.linkedin.com/company/skillquestcircle/" aria-label="Visit our LinkedIn page" target="_blank">LinkedIn · </a>
+                <a href="https://theritikbarnwal-portfolio.vercel.app/" aria-label="Visit Ritik's LinkedIn" target="_blank">Ritik Barnwal</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Hamburger Menu Toggle
+        const hamburger = document.querySelector('.hamburger');
+        const nav = document.querySelector('nav');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            nav.classList.toggle('active');
+        });
+
+        hamburger.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                hamburger.classList.toggle('active');
+                nav.classList.toggle('active');
+            }
+        });
+
+        // Close menu when a nav link is clicked
+        nav.querySelectorAll('a').forEach((href) => {
+            href.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                nav.classList.remove('active');
+            });
+        });
+
+        // Smooth scroll with Header Offset
+        nav.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    const header = document.querySelector('header');
+                    const headerHeight = header ? header.offsetHeight : 80;
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - headerHeight;
+                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Project Card Section
+        const projectContainer = document.getElementById('project-container');
+        const projectLoading = document.getElementById('project-loading');
+        const noProjectsMessage = document.getElementById('no-projects');
+
+        function renderProjectCards() {
+            projectContainer.innerHTML = '';
+            projectLoading.style.display = 'block';
+            noProjectsMessage.style.display = 'none';
+
+            const projects = [
+                {
+                    id: '1',
+                    name: 'SN_AUTOMATE',
+                    description: 'Scraping tool with CI/CD pipelines',
+                    date: '2025-05-10',
+                    githubLink: 'https://github.com/theritikbarnwal/sn_automate',
+                    team: ['/pics/ritik.jpg']
+                },
+                {
+                    id: '2',
+                    name: 'Tic-Tac-Toe',
+                    description: 'Web development',
+                    date: '2025-02-15',
+                    githubLink: 'https://github.com/theritikbarnwal/tictactoe',
+                    team: []
+                },
+                {
+                    id: '3',
+                    name: 'HealthSync Dashboard',
+                    description: 'Patient data visualization',
+                    date: '2025-03-01',
+                    githubLink: '#',
+                    team: []
+                },
+            ];
+
+            if (projects.length === 0) {
+                projectLoading.style.display = 'none';
+                noProjectsMessage.style.display = 'block';
+                return;
+            }
+
+            projects.forEach((project, index) => {
+                const colorClass = ['green', 'orange', 'blue'][index % 3];
+                const card = document.createElement('div');
+                card.className = `card ${colorClass}`;
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div class="date">${project.date}</div>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10.5 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="card-body">
+                        <h3>${project.name}</h3>
+                        <p>${project.description}</p>
+                    </div>
+                    <div class="card-footer">
+                        <ul>
+                            ${project.team.map(img => `<li><img src="${img}" alt="Team Member" onerror="this.src='/pics/ritik.jpg'"></li>`).join('')}
+                            <li><a href="#" class="btn-add">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" clip-rule="evenodd" />
+                                </svg>
+                            </a></li>
+                        </ul>
+                        <a href="${project.githubLink}" target="_blank" class="btn-countdown" ${project.githubLink === '#' ? 'style="pointer-events: none; opacity: 0.5;"' : ''}>GitHub</a>
+                    </div>
+                `;
+                projectContainer.appendChild(card);
+            });
+
+            projectLoading.style.display = 'none';
         }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        // Contact Form Script
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const submitBtn = form.querySelector('#submit-btn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnSpinner = submitBtn.querySelector('.btn-spinner');
+            const feedback = form.querySelector('#form-feedback');
+            let hasError = false;
+
+            form.querySelectorAll('.error-message').forEach(span => span.textContent = '');
+            form.querySelectorAll('input, textarea').forEach(input => input.setAttribute('aria-invalid', 'false'));
+
+            const name = form.name.value.trim();
+            if (name.length < 2) {
+                form.querySelector('#name-error').textContent = 'Name must be at least 2 characters';
+                form.name.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            const email = form.email.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                form.querySelector('#email-error').textContent = 'Please enter a valid email';
+                form.email.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            const phone = form.phone.value.trim();
+            const phoneRegex = /^\+?[\d\s-]{10,}$/;
+            if (!phoneRegex.test(phone)) {
+                form.querySelector('#phone-error').textContent = 'Please enter a valid phone number (at least 10 digits)';
+                form.phone.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            const degree = form.degree.value.trim();
+            if (degree.length < 2) {
+                form.querySelector('#degree-error').textContent = 'Degree must be at least 2 characters';
+                form.degree.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            const specialization = form.specialization.value.trim();
+            if (specialization.length < 2) {
+                form.querySelector('#specialization-error').textContent = 'Specialization must be at least 2 characters';
+                form.specialization.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            const role = form.role.value.trim();
+            if (role.length < 2) {
+                form.querySelector('#role-error').textContent = 'Role must be at least 2 characters';
+                form.role.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            const message = form.message.value.trim();
+            if (message.length < 10) {
+                form.querySelector('#message-error').textContent = 'Message must be at least 10 characters';
+                form.message.setAttribute('aria-invalid', 'true');
+                hasError = true;
+            }
+
+            if (hasError) {
+                feedback.textContent = 'Please fix the errors above.';
+                feedback.classList.add('error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnSpinner.style.display = 'inline-block';
+            feedback.textContent = '';
+            feedback.classList.remove('error');
+
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                btnText.style.display = 'inline-block';
+                btnSpinner.style.display = 'none';
+                feedback.textContent = 'Message sent successfully!';
+                form.reset();
+                setTimeout(() => {
+                    feedback.textContent = '';
+                }, 5000);
+            }, 1500);
+        });
+
+        // Bubble Animation Script
+        const bubbleContainer = document.querySelector('.bubble-container');
+        const numBubbles = 20;
+
+        for (let i = 0; i < numBubbles; i++) {
+            const bubble = document.createElement('span');
+            bubble.classList.add('bubble');
+
+            const size = Math.random() * 30 + 10;
+            const left = Math.random() * 100;
+            const duration = Math.random() * 20 + 10;
+            const delay = Math.random() * 5;
+            const wobble = Math.random() * 2 - 1;
+            const color = Math.random() > 0.5 ? 'var(--skillquest-purple, #6f42c1)' : 'var(--skillquest-yellow, #f4d03f)';
+
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            bubble.style.left = `${left}%`;
+            bubble.style.backgroundColor = color;
+            bubble.style.animationDuration = `${duration}s`;
+            bubble.style.animationDelay = `${delay}s`;
+            bubble.style.setProperty('--wobble', wobble);
+
+            bubbleContainer.appendChild(bubble);
+        }
+
+        // Initialize projects
+        renderProjectCards();
     </script>
 </body>
 </html>
